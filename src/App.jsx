@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 
 export default function App() {
@@ -16,30 +17,43 @@ export default function App() {
 }
 
 function RegistrationForm() {
+  const {values, handleInput} = useForm ();
   return (
     <Form>
       <InputField
         label="Full Name"
         type="name"
+        name="fullname"
         placeholder="enter your full name"
+        value={values.fullname}
+        onChange = {handleInput}
       />
 
       <InputField
         label="email"
         type="email"
+        name="email"
         placeholder="username@exaples.com"
+        value={values.email}
+        onChange = {handleInput}
       />
 
       <InputField
         label="password"
         type="password"
+        name="password"
         placeholder="enter a stong password"
+        value={values.password}
+        onChange = {handleInput}
       />
 
       <InputField
         label="Conform Password"
         type="password"
+        name="confirmpassword"
         placeholder="re-enter your password"
+        value={values.confirmpassword}
+        onChange = {handleInput}
       />
 
       <Button type="submit">Register</Button>
@@ -55,3 +69,21 @@ const InputField = ({ label, ...props }) => {
     </Form.Group>
   );
 };
+
+const useForm = ()=> {
+  const [values, setValues] = useState({
+    fullname: "",
+    email: "",
+    password: "",
+    confirmpassword: ""
+  })
+
+  const handleInput = (event) => {
+    setValues({
+      ...values,
+      [event.target.name] : event.target.value
+    })
+  }
+
+  return {values, handleInput}
+}
