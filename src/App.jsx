@@ -17,89 +17,129 @@ export default function App() {
 }
 
 function RegistrationForm() {
-  const {values, handleInput, resetValues} = useForm ();
+  const { values, handleInput, resetValues, validate, errors } = useForm();
 
   const submitForm = (event) => {
     event.preventDefault();
-  }
+    if (validate()) {
+      // Do something on successful validation
+      console.log("Form submitted successfully!");
+    }
+  };
+
   return (
     <Form onSubmit={submitForm}>
       <InputField
         label="Full Name"
-        type="name"
+        type="text"
         name="fullname"
-        placeholder="enter your full name"
+        placeholder="Enter your full name"
         value={values.fullname}
-        onChange = {handleInput}
+        onChange={handleInput}
+        error={errors.fullname}
       />
 
       <InputField
-        label="email"
+        label="Email"
         type="email"
         name="email"
-        placeholder="username@exaples.com"
+        placeholder="username@example.com"
         value={values.email}
-        onChange = {handleInput}
+        onChange={handleInput}
+        error={errors.email}
       />
 
       <InputField
-        label="password"
+        label="Password"
         type="password"
         name="password"
-        placeholder="enter a stong password"
+        placeholder="Enter a strong password"
         value={values.password}
-        onChange = {handleInput}
+        onChange={handleInput}
+        error={errors.password}
       />
 
       <InputField
-        label="Conform Password"
+        label="Confirm Password"
         type="password"
         name="confirmpassword"
-        placeholder="re-enter your password"
+        placeholder="Re-enter your password"
         value={values.confirmpassword}
-        onChange = {handleInput}
+        onChange={handleInput}
+        error={errors.confirmpassword}
       />
+
       <div className="mt-3">
-      <Button type="submit">Register</Button>
-      {" "}
-      <Button variant="outline-secondary" onClick={resetValues}>Reset</Button>
+        <Button type="submit">Register</Button>{" "}
+        <Button variant="outline-secondary" onClick={resetValues}>
+          Reset
+        </Button>
       </div>
     </Form>
   );
 }
 
-const InputField = ({ label, ...props }) => {
+const InputField = ({ label, error, ...props }) => {
   return (
     <Form.Group className="mb-3">
       <Form.Label>{label}</Form.Label>
       <Form.Control {...props} />
+      {error && <div className="text-danger">{error}</div>}
     </Form.Group>
   );
 };
 
-const useForm = ()=> {
+const useForm = () => {
   const [values, setValues] = useState({
     fullname: "",
     email: "",
     password: "",
-    confirmpassword: ""
-  })
+    confirmpassword: "",
+  });
+
+  const [errors, setErrors] = useState({});
 
   const handleInput = (event) => {
     setValues({
       ...values,
-      [event.target.name] : event.target.value
-    })
-  }
+      [event.target.name]: event.target.value,
+    });
+  };
 
-  const resetValues = (event) => {
+  const resetValues = () => {
     setValues({
       fullname: "",
       email: "",
       password: "",
-      confirmpassword: ""
-    })
-  }
+      confirmpassword: "",
+    });
+    setErrors({});
+  };
 
-  return {values, handleInput, resetValues }
-}
+  const validate = () => {
+    const newErrors = {};
+
+    if (values.fullname.length < 3) {
+      newErrors.fullname = "Minimum 3 letters required";
+    }
+
+    if (
+      !values.email.match(
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      )
+    ) {
+      newErrors.email = "Not a valid email";
+    }
+
+    if (values.password.length < 8) {
+      newErrors.password = "Password should contain at least 8 characters";
+    } else if (values.password !== values.confirmpassword) {
+      newErrors.confirmpassword = "Passwords do not match";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  return { values, handleInput, resetValues, validate, errors };
+};
