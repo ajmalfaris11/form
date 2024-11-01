@@ -18,8 +18,12 @@ export default function App() {
 
 function RegistrationForm() {
   const {values, handleInput} = useForm ();
+
+  const submitForm = (event) => {
+    event.preventDefault();
+  }
   return (
-    <Form>
+    <Form onSubmit={submitForm}>
       <InputField
         label="Full Name"
         type="name"
