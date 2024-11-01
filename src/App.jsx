@@ -17,7 +17,7 @@ export default function App() {
 }
 
 function RegistrationForm() {
-  const {values, handleInput} = useForm ();
+  const {values, handleInput, resetValues} = useForm ();
 
   const submitForm = (event) => {
     event.preventDefault();
@@ -59,8 +59,11 @@ function RegistrationForm() {
         value={values.confirmpassword}
         onChange = {handleInput}
       />
-
+      <div className="mt-3">
       <Button type="submit">Register</Button>
+      {" "}
+      <Button variant="outline-secondary" onClick={resetValues}>Reset</Button>
+      </div>
     </Form>
   );
 }
@@ -89,5 +92,14 @@ const useForm = ()=> {
     })
   }
 
-  return {values, handleInput}
+  const resetValues = (event) => {
+    setValues({
+      fullname: "",
+      email: "",
+      password: "",
+      confirmpassword: ""
+    })
+  }
+
+  return {values, handleInput, resetValues }
 }
