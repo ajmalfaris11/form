@@ -22,8 +22,8 @@ function RegistrationForm() {
   const submitForm = (event) => {
     event.preventDefault();
     if (validate()) {
-      // Do something on successful validation
-      console.log("Form submitted successfully!");
+      alert("Form Sumbmited")
+      resetValues();
     }
   };
 
