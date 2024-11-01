@@ -79,11 +79,13 @@ function RegistrationForm() {
   );
 }
 
+// ====== label combonent ======
+
 const InputField = ({ label, error, ...props }) => {
   return (
     <Form.Group className="mb-3">
       <Form.Label>{label}</Form.Label>
-      <Form.Control {...props} />
+      <Form.Control {...props}  className={error ? "is-invalid" : ""} />
       {error && <div className="text-danger">{error}</div>}
     </Form.Group>
   );
