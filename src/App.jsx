@@ -1,18 +1,14 @@
 import { useState } from "react";
-import { Button, Card, Col, Form, Row } from "react-bootstrap";
+import { Button, Form, Row } from "react-bootstrap";
 
 export default function App() {
   return (
-    <>
-      <Row style={{ justifyContent: "center" }}>
-        <Col xs={8} className="mt-5">
-          <Card className="p-4">
-            <h1 className="mb-4">Sign up</h1>
-            <RegistrationForm />
-          </Card>
-        </Col>
-      </Row>
-    </>
+    <Row className="justify-content-center bg-primary vh-100 d-flex align-items-center m-0">
+      <div className="bg-white p-4 rounded shadow" style={{ width: "400px" }}>
+        <h3 className="text-center mb-4">Sign-up</h3>
+        <RegistrationForm />
+      </div>
+    </Row>
   );
 }
 
@@ -22,7 +18,7 @@ function RegistrationForm() {
   const submitForm = (event) => {
     event.preventDefault();
     if (validate()) {
-      alert("Form Sumbmited")
+      alert("Form Submitted");
       resetValues();
     }
   };
@@ -40,7 +36,6 @@ function RegistrationForm() {
       />
 
       <InputField
-        label="Email"
         type="email"
         name="email"
         placeholder="username@example.com"
@@ -50,7 +45,6 @@ function RegistrationForm() {
       />
 
       <InputField
-        label="Password"
         type="password"
         name="password"
         placeholder="Enter a strong password"
@@ -60,7 +54,6 @@ function RegistrationForm() {
       />
 
       <InputField
-        label="Confirm Password"
         type="password"
         name="confirmpassword"
         placeholder="Re-enter your password"
@@ -69,24 +62,39 @@ function RegistrationForm() {
         error={errors.confirmpassword}
       />
 
-      <div className="mt-3">
-        <Button type="submit">Register</Button>{" "}
-        <Button variant="outline-secondary" onClick={resetValues}>
-          Reset
-        </Button>
+      <Form.Group controlId="terms" className="mb-3 d-flex align-items-center">
+        <Form.Check
+          type="checkbox"
+          name="terms"
+          checked={values.terms}
+          onChange={handleInput}
+          required
+        />
+        <Form.Label className="ms-2" htmlFor="terms">
+          I accept all terms & conditions
+        </Form.Label>
+      </Form.Group>
+
+      <Button type="submit" className="w-100 mb-2" variant="primary">
+        Register Now
+      </Button>
+
+      <div className="text-center">
+        <small>
+          Already have an account? <a href="#login" class="text-decoration-none">Login now</a>
+        </small>
       </div>
     </Form>
   );
 }
 
-// ====== label combonent ======
+// ====== InputField component ======
 
-const InputField = ({ label, error, ...props }) => {
+const InputField = ({ error, ...props }) => {
   return (
     <Form.Group className="mb-3">
-      <Form.Label>{label}</Form.Label>
-      <Form.Control {...props}  className={error ? "is-invalid" : ""} />
-      {error && <div className="text-danger">{error}</div>}
+      <Form.Control {...props} className={error ? "is-invalid" : ""} />
+      {error && <div className="text-danger small mt-1">{error}</div>}
     </Form.Group>
   );
 };
@@ -97,14 +105,16 @@ const useForm = () => {
     email: "",
     password: "",
     confirmpassword: "",
+    terms: false, // Add terms checkbox to initial values
   });
 
   const [errors, setErrors] = useState({});
 
   const handleInput = (event) => {
+    const { name, type, value, checked } = event.target;
     setValues({
       ...values,
-      [event.target.name]: event.target.value,
+      [name]: type === "checkbox" ? checked : value, // Update checkbox value if not check box set the input values
     });
   };
 
@@ -114,6 +124,7 @@ const useForm = () => {
       email: "",
       password: "",
       confirmpassword: "",
+      terms: false, // Reset checkbox to false
     });
     setErrors({});
   };
@@ -125,11 +136,7 @@ const useForm = () => {
       newErrors.fullname = "Minimum 3 letters required";
     }
 
-    if (
-      !values.email.match(
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      )
-    ) {
+    if (!values.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
       newErrors.email = "Not a valid email";
     }
 
